@@ -1,0 +1,12 @@
+#!/bin/bash
+
+NAME="corenlp"                                  # Name of the application
+SERVER_DIR=/home/ubuntu/deployments/StanfordCoreNLPXMLServer # NLP directory
+
+echo "Starting $NAME"
+
+# Activate the virtual environment
+cd $SERVER_DIR
+
+# Programs meant to be run under supervisor should not daemonize themselves (do not use --daemon)
+ant run
