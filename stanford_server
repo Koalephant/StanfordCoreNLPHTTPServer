@@ -9,4 +9,4 @@ echo "Starting $NAME"
 cd $SERVER_DIR
 
 # Programs meant to be run under supervisor should not daemonize themselves (do not use --daemon)
-ant run
+java -Xmx2048m -jar build/jar/StanfordCoreNLPXMLServer.jar
