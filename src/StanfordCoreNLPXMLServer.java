@@ -53,8 +53,9 @@ public class StanfordCoreNLPXMLServer implements Container {
     }
 
     public void handle(Request request, Response response) {
+    	int request_number = ++total_requests;
+    	String text = request.getQuery().get("text");
         try {
-            int request_number = ++total_requests;
             log.info("Request " + request_number + " from " + request.getClientAddress().getHostName());
             long time = System.currentTimeMillis();
    
@@ -64,7 +65,6 @@ public class StanfordCoreNLPXMLServer implements Container {
             response.setDate("Last-Modified", time);
    
             // pass "text" POST query to Stanford Core NLP parser
-            String text = request.getQuery().get("text");  
             PrintStream body = response.getPrintStream();
             body.println(parse(text));
             body.close();
@@ -73,6 +73,7 @@ public class StanfordCoreNLPXMLServer implements Container {
             log.info("Request " + request_number + " done (" + (time2-time) + " ms)");
         } catch(Exception e) {
             log.log(Level.SEVERE, "Exception", e);
+            log.info("Request " + request_number + ", raised exception for " + text);
         }
     } 
 
