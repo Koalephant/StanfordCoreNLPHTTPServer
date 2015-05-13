@@ -28,6 +28,14 @@ import edu.stanford.nlp.pipeline.*;
 import edu.stanford.nlp.trees.*;
 import edu.stanford.nlp.util.*;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.Query;
@@ -47,6 +55,11 @@ public class StanfordCoreNLPXMLServer implements Container {
     public String parse(String s) throws java.io.IOException {
         Annotation annotation = new Annotation(s);
         pipeline.annotate(annotation);
+//        try {
+//            Thread.sleep(10000);                 //1000 milliseconds is one second.
+//        } catch(InterruptedException ex) {
+//            Thread.currentThread().interrupt();
+//        }
         StringWriter sb = new StringWriter();
         pipeline.xmlPrint(annotation, sb);
         return sb.toString();
@@ -64,11 +77,36 @@ public class StanfordCoreNLPXMLServer implements Container {
             response.setDate("Last-Modified", time);
    
             // pass "text" POST query to Stanford Core NLP parser
-            String text = request.getQuery().get("text");  
+            final String text = request.getQuery().get("text");  
             PrintStream body = response.getPrintStream();
-            body.println(parse(text));
-            body.close();
 
+                       
+            // Input Request are handled externally, so here single thread executor is fine
+            ExecutorService executor = Executors.newSingleThreadExecutor();
+            Callable<Object> task = new Callable<Object>() {
+               public Object call() throws IOException {
+                  return parse(text);
+               }
+            };
+            Future<Object> future = executor.submit(task);
+            Object result = null;
+            try {
+               result = future.get(1, TimeUnit.SECONDS);
+            } catch (TimeoutException ex) {
+               // handle the timeout
+            	log.log(Level.SEVERE, "TimeoutException", ex.toString());
+            } catch (InterruptedException e) {
+               // handle the interrupts
+            	log.log(Level.SEVERE, "InterruptedException", e.toString());
+            } catch (ExecutionException e) {
+               // handle other exceptions
+            	log.log(Level.SEVERE, "ExecutionException", e.toString());
+            } finally {
+               future.cancel(true); // may or may not desire this
+               executor.shutdownNow();
+            }
+            body.println(result);
+            body.close();
             long time2 = System.currentTimeMillis();
             log.info("Request " + request_number + " done (" + (time2-time) + " ms)");
         } catch(Exception e) {
