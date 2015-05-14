@@ -91,7 +91,7 @@ public class StanfordCoreNLPXMLServer implements Container {
             Future<Object> future = executor.submit(task);
             Object result = null;
             try {
-               result = future.get(1, TimeUnit.SECONDS);
+               result = future.get(60, TimeUnit.SECONDS);
             } catch (TimeoutException ex) {
                // handle the timeout
             	log.log(Level.SEVERE, "TimeoutException", ex.toString());
