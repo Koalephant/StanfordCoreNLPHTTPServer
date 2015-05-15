@@ -66,8 +66,9 @@ public class StanfordCoreNLPXMLServer implements Container {
     }
 
     public void handle(Request request, Response response) {
+    	int request_number = ++total_requests;
+    	final String text = request.getQuery().get("text"); 
         try {
-            int request_number = ++total_requests;
             log.info("Request " + request_number + " from " + request.getClientAddress().getHostName());
             long time = System.currentTimeMillis();
    
@@ -76,8 +77,7 @@ public class StanfordCoreNLPXMLServer implements Container {
             response.setDate("Date", time);
             response.setDate("Last-Modified", time);
    
-            // pass "text" POST query to Stanford Core NLP parser
-            final String text = request.getQuery().get("text");  
+            // pass "text" POST query to Stanford Core NLP parser 
             PrintStream body = response.getPrintStream();
 
                        
@@ -94,13 +94,16 @@ public class StanfordCoreNLPXMLServer implements Container {
                result = future.get(60, TimeUnit.SECONDS);
             } catch (TimeoutException ex) {
                // handle the timeout
-            	log.log(Level.SEVERE, "TimeoutException", ex.toString());
+            	log.log(Level.SEVERE, "TimeoutException", ex);
+                log.info("Request " + request_number + ", raised exception for " + text);
             } catch (InterruptedException e) {
                // handle the interrupts
-            	log.log(Level.SEVERE, "InterruptedException", e.toString());
+            	log.log(Level.SEVERE, "InterruptedException", e);
+                log.info("Request " + request_number + ", raised exception for " + text);
             } catch (ExecutionException e) {
                // handle other exceptions
-            	log.log(Level.SEVERE, "ExecutionException", e.toString());
+            	log.log(Level.SEVERE, "ExecutionException", e);
+                log.info("Request " + request_number + ", raised exception for " + text);
             } finally {
                future.cancel(true); // may or may not desire this
                executor.shutdownNow();
@@ -111,6 +114,7 @@ public class StanfordCoreNLPXMLServer implements Container {
             log.info("Request " + request_number + " done (" + (time2-time) + " ms)");
         } catch(Exception e) {
             log.log(Level.SEVERE, "Exception", e);
+            log.info("Request " + request_number + ", raised exception for " + text);
         }
     } 
 
