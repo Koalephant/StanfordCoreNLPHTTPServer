@@ -1,69 +1,98 @@
-<project name="StanfordCoreNLPXMLServer">
-    <property name="src.dir"     value="src"/>
+<project name="stanford-corenlp-http-server">
 
-    <property name="build.dir"   value="build"/>
-    <property name="classes.dir" value="${build.dir}/classes"/>
-    <property name="jar.dir"     value="${build.dir}/jar"/>
-    <property name="lib.dir"     value="lib"/>
+	<target name="layout">
+		<property name="source.path" value="src"/>
+		<property name="lib.dir"     value="lib"/>
+		<property name="javadoc.path" value="javadoc"/>
+		<property name="build.path" value="build"/>
+		<property name="jar.path" value="jar"/>
+		<property name="test.path" value="test"/>
+		<property name="version" value="2.0.0"/>
 
-    <property name="main-class"  value="StanfordCoreNLPXMLServer"/>
-    <property name="port"  value=""/>
+		<path id="libclasspath">
+			<fileset dir="${lib.dir}" includes="**/*.jar"/>
+		</path>
 
-    <path id="classpath">
-        <fileset dir="${lib.dir}" includes="**/*.jar"/>
-    </path>
+		<path id="builtclasspath">
+			<fileset dir="${lib.dir}" includes="**/*.jar"/>
+			<fileset dir="${jar.path}" includes="**/*.jar" />
+		</path>
 
-    <target name="clean" description="Delete all generated files.">
-        <delete dir="${build.dir}"/>
-    </target>
 
-    <target name="libs" depends="simple, stanford" description="Download and compile all required 3rd party libraries." />
+		<property name="main-class"  value="com.koalephant.nlp.StanfordCoreNLPHTTPServer"/>
 
-    <target name="simple">
-        <get src="http://downloads.sourceforge.net/project/simpleweb/simpleweb/5.1.6/simple-5.1.6.zip" dest="simple-5.1.6.zip" />
-        <unzip src="simple-5.1.6.zip" dest="." />
-        <ant dir="simple-5.1.6" target="build" />
-        <move file="simple-5.1.6/jar/simple-5.1.6.jar" todir="${lib.dir}" />
-        <delete dir="simple-5.1.6" />
-        <delete file="simple-5.1.6.zip" />
-    </target>
+		<property name="port" value="8080"/>
+		<property name="host" value="127.0.0.1"/>
 
-    <target name="stanford">
-        <get src="http://nlp.stanford.edu/software/stanford-corenlp-full-2015-04-20.zip" dest="stanford-corenlp-full-2015-04-20.zip" />
-        <unzip src="stanford-corenlp-full-2015-04-20.zip" dest="." />
-        <move todir="${lib.dir}">
-            <fileset dir="stanford-corenlp-full-2015-04-20">
-                <include name="**/*.jar" />
-            </fileset>
-        </move>
-        <delete dir="stanford-corenlp-full-2015-04-20" />
-        <delete file="stanford-corenlp-full-2015-04-20.zip" />
-    </target>
+	</target>
 
-    <target name="compile">
-        <mkdir dir="${classes.dir}"/>
-        <javac srcdir="${src.dir}" destdir="${classes.dir}" includeantruntime="false" classpathref="classpath" />
-    </target>
+	<target name="clean" depends="layout" description="Remove built artefacts">
+		<delete dir="${build.path}"/>
+		<delete dir="${jar.path}"/>
+	</target>
 
-    <target name="jar" depends="compile">
-        <mkdir dir="${jar.dir}"/>
-        <jar destfile="${jar.dir}/${ant.project.name}.jar" basedir="${classes.dir}">
-            <manifest>
-                <attribute name="Main-Class" value="${main-class}"/>
-            </manifest>
-            <zipgroupfileset dir="${lib.dir}" includes="**/*.jar"/>
-        </jar>
-    </target>
+	<target name="prepare" depends="clean" description="Setup direcotry structure for a build">
+		<mkdir dir="${build.path}"/>
+		<mkdir dir="${jar.path}"/>
+	</target>
 
-    <target name="run" depends="jar">
-        <java jar="${jar.dir}/${ant.project.name}.jar" fork="true" maxmemory="3072m">
-            <arg value="${port}" />
-        </java>
-    </target>
+	<target name="simple5" description="Download SimpleWeb library">
+		<get src="http://downloads.sourceforge.net/project/simpleweb/simpleweb/5.1.6/simple-5.1.6.zip" dest="simple-5.1.6.zip" skipexisting="true" />
+		<unzip src="simple-5.1.6.zip" dest="." />
+		<ant dir="simple-5.1.6" target="build" inheritAll="false" inheritRefs="false" />
+		<move file="simple-5.1.6/jar/simple-5.1.6.jar" todir="${lib.dir}" />
+		<delete dir="simple-5.1.6" />
+	</target>
 
-    <target name="test">
-        <java jar="${jar.dir}/${ant.project.name}.jar" fork="true" timeout="30000" maxmemory="1024m">
-            <arg value="${port}" />
+	<target name="stanford-corenlp" description="Download Stanford CoreNLP">
+		<get src="http://nlp.stanford.edu/software/stanford-corenlp-full-2015-04-20.zip" dest="stanford-corenlp-full-2015-04-20.zip" skipexisting="true" />
+		<get src="http://nlp.stanford.edu/software/stanford-corenlp-caseless-2015-04-20-models.jar" dest="stanford-corenlp-caseless-2015-04-20-models.jar" skipexisting="true" />
+		<unzip src="stanford-corenlp-full-2015-04-20.zip" dest="." />
+		<move todir="${lib.dir}">
+			<fileset dir="stanford-corenlp-full-2015-04-20">
+				<include name="**/*.jar" />
+			</fileset>
+			<filelist>
+				<file name="stanford-corenlp-caseless-2015-04-20-models.jar" />
+			</filelist>
+		</move>
+		<delete dir="stanford-corenlp-full-2015-04-20" />
+	</target>
+
+
+	<target name="libs" depends="prepare, simple5, stanford-corenlp" description="Download and compile all required 3rd party libraries." />
+
+
+	<target name="build" depends="libs">
+		<javac srcdir="${source.path}" destdir="${build.path}" debug="true" debuglevel="lines,vars,source" encoding="UTF-8" classpathref="libclasspath" includeantruntime="false" />
+		<jar jarfile="${jar.path}/${ant.project.name}-${version}.jar" basedir="${build.path}">
+			<manifest>
+				<attribute name="Main-Class" value="${main-class}"/>
+			</manifest>
+		</jar>
+		<delete dir="${build.path}"/>
+	</target>
+
+	<!--<target name="test" depends="layout">-->
+		<!--<ant antfile="build.xml" dir="${test.path}" inheritall="false"/>-->
+		<!--<delete dir="${build.path}"/>-->
+	<!--</target>-->
+
+	<target name="javadoc" depends="layout">
+		<mkdir dir="${javadoc.path}"/>
+		<javadoc sourcepath="${source.path}" packagenames="com.koalephant.*" destdir="${javadoc.path}" private="false"/>
+	</target>
+
+	<target name="all">
+		<antcall target="build"/>
+		<antcall target="javadoc"/>
+		<!--<antcall target="test"/>-->
+	</target>
+
+	<target name="test" depends="layout">
+        <java classname="${main-class}" fork="true" timeout="30000" maxmemory="1024m" classpathref="builtclasspath">
+            <arg value="--port ${port}" />
+            <arg value="--host ${host}" />
         </java>
     </target>
 </project>

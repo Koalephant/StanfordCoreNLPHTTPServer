@@ -1,10 +1,17 @@
-# Stanford CoreNLP XML Server
+# Stanford CoreNLP HTTP Server
 
 [![Build Status](https://travis-ci.org/nlohmann/StanfordCoreNLPXMLServer.png)](https://travis-ci.org/nlohmann/StanfordCoreNLPXMLServer)
 
 ## About
 
-This software offers the functionality of the [Stanford CoreNLP](http://nlp.stanford.edu/software/corenlp.shtml) as HTTP-XML-Server. This avoids the time-consuming initialization every time CoreNLP is started. It is very similar to projects like [this Python wrapper](https://github.com/relwell/stanford-corenlp-python).
+This software offers the functionality of the [Stanford CoreNLP](http://nlp.stanford.edu/software/corenlp.shtml) as a  HTTP Server. This avoids the time-consuming initialization every time CoreNLP is started. It is very similar to projects like [this Python wrapper](https://github.com/relwell/stanford-corenlp-python).
+
+This is a fork (of a fork) from the original [StanfordCoreNLPXMLServer](https://github.com/nlohmann/StanfordCoreNLPXMLServer) with the followign differences:
+
+- No longer limited to XML - serves JSON/XML depending on the requesting 'Accept' header
+- Packaged to run as a server on Debian
+	- Listening Interface:Port configured in `/etc/defaults/corenlphttp`
+	- Loads configuration from `/etc/corenlphttp/*.properties`
 
 ## Example
 
