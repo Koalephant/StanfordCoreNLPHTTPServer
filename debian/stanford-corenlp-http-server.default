@@ -6,5 +6,10 @@
 # This is a POSIX shell fragment
 #
 
-# Additional options that are passed to the Daemon.
-DAEMON_ARGS="-props /etc/stanford-corenlp-http-server/default.properties"
+# Java options
+MIN_MEM=1G
+MAX_MEM=3G
+CLASSPATH="/usr/share/java/*"
+
+# Additional arguments that are passed to the Daemon.
+PROPS_FILE=/etc/stanford-corenlp-http-server/default.properties

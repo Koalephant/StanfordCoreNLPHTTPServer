@@ -1,8 +1,0 @@
-#!/bin/sh -eu
-
-export CLASSPATH="/usr/share/java/*"
-export MAXMEM=${MAXMEM:-3G}
-
-echo "Starting com.koalephant.nlp.StanfordCoreNLPHTTPServer"
-
-exec java -Xmx${MAXMEM} com.koalephant.nlp.StanfordCoreNLPHTTPServer $*

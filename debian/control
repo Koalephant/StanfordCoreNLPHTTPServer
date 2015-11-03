@@ -10,6 +10,6 @@ Vcs-Browser: https://github.com/Koalephant/StanfordCoreNLPHTTPServer
 
 Package: stanford-corenlp-http-server
 Architecture: all
-Depends: java8-runtime-headless | openjdk-8-jre-headless | java8-runtime | openjdk-8-jre, lib-stanford-corenlp-java (>= 3.5.2), ${misc:Depends}
+Depends: java8-runtime-headless | openjdk-8-jre-headless | java8-runtime | openjdk-8-jre, lib-stanford-corenlp-java (>= 3.5.2), adduser, ${misc:Depends}
 Description: HTTP Sever for Stanford CoreNLP
  JSON & XML aware HTTP Server to process text using Stanford CoreNLP

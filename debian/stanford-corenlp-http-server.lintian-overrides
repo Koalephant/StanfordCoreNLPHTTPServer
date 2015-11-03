@@ -1,2 +1,3 @@
 stanford-corenlp-http-server: unknown-java-class-version
-stanford-corenlp-http-server: binary-without-manpage
+stanford-corenlp-http-server: init.d-script-not-marked-as-conffile
+stanford-corenlp-http-server: init.d-script-not-included-in-package

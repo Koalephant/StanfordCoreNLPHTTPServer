@@ -82,6 +82,7 @@ public class StanfordCoreNLPHTTPServer implements Container {
 		Properties props = new Properties();
 		// Load properties from the command line
 		if (args.length > 0) {
+			log.info("Reading Opts...");
 			props = StringUtils.argsToProperties(args);
 		}
 
@@ -99,7 +100,6 @@ public class StanfordCoreNLPHTTPServer implements Container {
 				System.err.println("Invalid port specified: " + portOpt);
 				System.exit(1);
 			}
-			log.info(portOpt);
 		}
 
 		String defaultTypeStr = props.getProperty("defaultType");
@@ -115,6 +115,8 @@ public class StanfordCoreNLPHTTPServer implements Container {
 
 		// start the server
 		Container container = new StanfordCoreNLPHTTPServer(new StanfordCoreNLP(props));
+
+		log.info("Attempting to listen on " + host + ":" + port + ".");
 
 		Server server = new ContainerServer(container);
 		Connection connection = new SocketConnection(server);

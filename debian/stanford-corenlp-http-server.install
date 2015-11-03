@@ -1,5 +1,4 @@
 #DOCS#
-stanford-corenlp-http-server usr/sbin
 default.properties etc/stanford-corenlp-http-server/
 jar/stanford-corenlp-http-server-2.0.0.jar usr/share/java/
 jar/stanford-corenlp-http-server-simple-5.1.6.jar usr/share/java/

@@ -1,0 +1,10 @@
+[Unit]
+Description=Stanford CoreNLP HTTP Server
+
+[Service]
+User=stanford-corenlp-http
+EnvironmentFile=/etc/default/stanford-corenlp-http-server
+ExecStart=/usr/bin/java -Xms${MIN_MEM} -Xmx${MAX_MEM} -cp ${CLASSPATH} com.koalephant.nlp.StanfordCoreNLPHTTPServer -props ${PROPS_FILE}
+
+[Install]
+WantedBy=multi-user.target
