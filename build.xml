@@ -1,29 +1,19 @@
-<project name="stanford-corenlp-http-server">
+<project name="stanford-corenlp-http-server" default="build">
 
 	<target name="layout">
 		<property name="source.path" value="src"/>
-		<property name="lib.dir"     value="lib"/>
 		<property name="javadoc.path" value="javadoc"/>
 		<property name="build.path" value="build"/>
 		<property name="jar.path" value="jar"/>
 		<property name="test.path" value="test"/>
 		<property name="version" value="2.0.0"/>
 
-		<path id="libclasspath">
-			<fileset dir="${lib.dir}" includes="**/*.jar"/>
+		<path id="classpath">
+			<fileset dir="/usr/share/java" includes="**/*.jar"/>
+			<fileset dir="${jar.path}" includes="**/*.jar"/>
 		</path>
-
-		<path id="builtclasspath">
-			<fileset dir="${lib.dir}" includes="**/*.jar"/>
-			<fileset dir="${jar.path}" includes="**/*.jar" />
-		</path>
-
 
 		<property name="main-class"  value="com.koalephant.nlp.StanfordCoreNLPHTTPServer"/>
-
-		<property name="port" value="8080"/>
-		<property name="host" value="127.0.0.1"/>
-
 	</target>
 
 	<target name="clean" depends="layout" description="Remove built artefacts">
@@ -40,31 +30,14 @@
 		<get src="http://downloads.sourceforge.net/project/simpleweb/simpleweb/5.1.6/simple-5.1.6.zip" dest="simple-5.1.6.zip" skipexisting="true" />
 		<unzip src="simple-5.1.6.zip" dest="." />
 		<ant dir="simple-5.1.6" target="build" inheritAll="false" inheritRefs="false" />
-		<move file="simple-5.1.6/jar/simple-5.1.6.jar" todir="${lib.dir}" />
+		<move file="simple-5.1.6/jar/simple-5.1.6.jar" tofile="${jar.path}/${ant.project.name}-simple-5.1.6.jar" />
 		<delete dir="simple-5.1.6" />
 	</target>
 
-	<target name="stanford-corenlp" description="Download Stanford CoreNLP">
-		<get src="http://nlp.stanford.edu/software/stanford-corenlp-full-2015-04-20.zip" dest="stanford-corenlp-full-2015-04-20.zip" skipexisting="true" />
-		<get src="http://nlp.stanford.edu/software/stanford-corenlp-caseless-2015-04-20-models.jar" dest="stanford-corenlp-caseless-2015-04-20-models.jar" skipexisting="true" />
-		<unzip src="stanford-corenlp-full-2015-04-20.zip" dest="." />
-		<move todir="${lib.dir}">
-			<fileset dir="stanford-corenlp-full-2015-04-20">
-				<include name="**/*.jar" />
-			</fileset>
-			<filelist>
-				<file name="stanford-corenlp-caseless-2015-04-20-models.jar" />
-			</filelist>
-		</move>
-		<delete dir="stanford-corenlp-full-2015-04-20" />
-	</target>
-
-
-	<target name="libs" depends="prepare, simple5, stanford-corenlp" description="Download and compile all required 3rd party libraries." />
-
+	<target name="libs" depends="prepare, simple5" description="Download and compile all required 3rd party libraries." />
 
 	<target name="build" depends="libs">
-		<javac srcdir="${source.path}" destdir="${build.path}" debug="true" debuglevel="lines,vars,source" encoding="UTF-8" classpathref="libclasspath" includeantruntime="false" />
+		<javac srcdir="${source.path}" destdir="${build.path}" debug="true" debuglevel="lines,vars,source" encoding="UTF-8" classpathref="classpath" includeantruntime="false" />
 		<jar jarfile="${jar.path}/${ant.project.name}-${version}.jar" basedir="${build.path}">
 			<manifest>
 				<attribute name="Main-Class" value="${main-class}"/>
@@ -89,10 +62,7 @@
 		<!--<antcall target="test"/>-->
 	</target>
 
-	<target name="test" depends="layout">
-        <java classname="${main-class}" fork="true" timeout="30000" maxmemory="1024m" classpathref="builtclasspath">
-            <arg value="--port ${port}" />
-            <arg value="--host ${host}" />
-        </java>
+	<target name="test" depends="build">
+        <java classname="${main-class}" fork="true" timeout="30000" maxmemory="1024m" classpathref="classpath" />
     </target>
 </project>

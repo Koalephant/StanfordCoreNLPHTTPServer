@@ -1,7 +1,5 @@
 # Stanford CoreNLP HTTP Server
 
-[![Build Status](https://travis-ci.org/nlohmann/StanfordCoreNLPXMLServer.png)](https://travis-ci.org/nlohmann/StanfordCoreNLPXMLServer)
-
 ## About
 
 This software offers the functionality of the [Stanford CoreNLP](http://nlp.stanford.edu/software/corenlp.shtml) as a  HTTP Server. This avoids the time-consuming initialization every time CoreNLP is started. It is very similar to projects like [this Python wrapper](https://github.com/relwell/stanford-corenlp-python).
@@ -89,7 +87,8 @@ The server will be listening at <http://localhost:8080>. The text you want to an
 </root>
 ```
 
-Note you can olso try this [online](http://nlp.stanford.edu:8080/corenlp/process) at Stanford University. Make sure you choose "XML" as output format. The output you get there only slightly differs from the XML here.
+Note you can also try this [online](http://nlp.stanford.edu:8080/corenlp/process) at Stanford University.
+Choose XML or JSON as the ouput format to see something close to how Stanford CoreNLP HTTP Server would respond (with appropriate `Accept` request header)
 
 ## Installation
 
@@ -99,7 +98,7 @@ Note you can olso try this [online](http://nlp.stanford.edu:8080/corenlp/process
 
 2. Download and install the third party libraries:
     
-        cd StanfordCoreNLPXMLServer
+        cd StanfordCoreNLPHTTPServer
         ant libs
 
 3. Compile the JAR file:
@@ -118,17 +117,18 @@ Note you can olso try this [online](http://nlp.stanford.edu:8080/corenlp/process
 
 ## Prerequisites
 
-- [Oracle JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html) or [OpenJDK](http://openjdk.java.net/install/) version 6 or later
+- [Oracle JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html) or [OpenJDK](http://openjdk.java.net/install/) version 8 or later
 - [Apache Ant](http://ant.apache.org)
 
 ## Third Party Libraries
 
-The Stanford CoreNLP XML Server uses the following third party libraries:
+The Stanford CoreNLP HTTP Server Server uses the following third party libraries:
 
 - [Stanford CoreNLP](http://nlp.stanford.edu/software/corenlp.shtml), a suite of core NLP tools
 - [Simple](http://www.simpleframework.org), a Java based HTTP engine
 
-The libraries can be downloaded and set up using the ant target `libs` (see [Installation](#installation)).
+Stanford CoreNLP is now quired as an external dependency. This is handled automatically by the Debian package.
+Simple can be downloaded and set up using the ant target `libs` (see [Installation](#installation)).
 
 ## License
 
@@ -137,4 +137,4 @@ The libraries can be downloaded and set up using the ant target `libs` (see [Ins
 
 ![GNU GPL v3](http://www.gnu.org/graphics/gplv3-127x51.png "GNU GPL v3")
 
-Due to compatibility issues (see [GNU.org](http://www.gnu.org/licenses/license-list.html) and [Apache.org](http://www.apache.org/licenses/GPL-compatibility.html)), the Stanford CoreNLP XML Server is licensed under the [**GNU General Public License Version 3**](http://www.gnu.org/licenses/gpl-3.0.html).
+Due to compatibility issues (see [GNU.org](http://www.gnu.org/licenses/license-list.html) and [Apache.org](http://www.apache.org/licenses/GPL-compatibility.html)), the Stanford CoreNLP HTTP Server is licensed under the [**GNU General Public License Version 3**](http://www.gnu.org/licenses/gpl-3.0.html).

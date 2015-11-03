@@ -23,9 +23,15 @@
 
 package com.koalephant.nlp;
 
+import edu.stanford.nlp.ling.CoreAnnotations;
+import edu.stanford.nlp.ling.CoreAnnotations.DocDateAnnotation;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.util.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.Status;
@@ -56,6 +62,7 @@ public class StanfordCoreNLPHTTPServer implements Container {
 	private static int port = 8080;
 	private StanfordCoreNLP pipeline;
 	private static MediaType defaultType = MediaType.APPLICATION_JSON;
+	private static DateTimeFormatter dateTimeFormatter = ISODateTimeFormat.dateTime();
 
 	/**
 	 * Constructor
@@ -120,6 +127,10 @@ public class StanfordCoreNLPHTTPServer implements Container {
 	// an interface to the Stanford Core NLP
 	public String parse(String s, MediaType mediaType) throws IOException {
 		Annotation annotation = new Annotation(s);
+
+		DateTime now = new DateTime();
+
+		annotation.set(DocDateAnnotation.class, now.toString(dateTimeFormatter));
 		pipeline.annotate(annotation);
 		StringWriter sb = new StringWriter();
 

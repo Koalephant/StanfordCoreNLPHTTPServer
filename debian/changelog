@@ -1,0 +1,5 @@
+stanford-corenlp-http-server (2.0.0) unstable; urgency=low
+
+  * Initial release
+
+ -- Stephen Reay <stephen@koalephant.com>  Tue, 03 Nov 2015 21:18:25 +0700

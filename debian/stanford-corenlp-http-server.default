@@ -1,0 +1,10 @@
+# Defaults for stanford-corenlp-http-server initscript
+# sourced by /etc/init.d/stanford-corenlp-http-server
+# installed at /etc/default/stanford-corenlp-http-server by the maintainer scripts
+
+#
+# This is a POSIX shell fragment
+#
+
+# Additional options that are passed to the Daemon.
+DAEMON_ARGS="-props /etc/stanford-corenlp-http-server/default.properties"
