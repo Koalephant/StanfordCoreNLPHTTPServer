@@ -26,7 +26,9 @@ case "$1" in
 	;;
 
     purge|remove|abort-install)
-    	deluser stanford-corenlp-http > /dev/null
+	if getent passwd stanford-corenlp-http > /dev/null; then
+		deluser stanford-corenlp-http > /dev/null
+	fi
     ;;
 
     *)
