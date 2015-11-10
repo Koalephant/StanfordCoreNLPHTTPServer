@@ -16,7 +16,7 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package com.koalephant.nlp;
+package com.koalephant.util;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

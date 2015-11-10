@@ -1,3 +1,9 @@
+stanford-corenlp-http-server (2.1.0) UNRELEASED; urgency=medium
+
+  * Added RegexNERValidator helper class to quote & test RegexNER maps
+
+ -- Stephen Reay <stephen@koalephant.com>  Tue, 10 Nov 2015 21:14:08 +0700
+
 stanford-corenlp-http-server (2.0.0) unstable; urgency=low
 
   * Initial release

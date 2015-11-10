@@ -23,13 +23,12 @@
 
 package com.koalephant.nlp;
 
-import edu.stanford.nlp.ling.CoreAnnotations;
+import com.koalephant.util.MediaType;
 import edu.stanford.nlp.ling.CoreAnnotations.DocDateAnnotation;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.util.StringUtils;
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 import org.simpleframework.http.Request;
@@ -46,12 +45,14 @@ import java.io.PrintStream;
 import java.io.StringWriter;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Stanford CoreNLP HTTP Server
+ */
 public class StanfordCoreNLPHTTPServer implements Container {
 
 	private static final String serverName = "Stanford CoreNLP HTTP Server/2.0 (Simple 5.1.6)";
